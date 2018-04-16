@@ -29,4 +29,22 @@ setInterval(() => {
   });
 }, 500);
 
+// update client every 500 milli-seconds with topETH orders
+setInterval(() => {
+  // get top three ask/bid
+  io.sockets.emit('topETH', {
+   asks: books.etherBook.asks.slice(0, 3).reverse(),
+   bids: books.etherBook.bids.slice(0, 3),
+  });
+}, 500);
+
+// update client every 500 milli-seconds with topETHBTC orders
+setInterval(() => {
+  // get top three ask/bid
+  io.sockets.emit('topETHBTC', {
+   asks: books.etherBitcoinBook.asks.slice(0, 3).reverse(),
+   bids: books.etherBitcoinBook.bids.slice(0, 3),
+  });
+}, 500);
+
 http.listen(port, () => console.log('Listening on:', port));

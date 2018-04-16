@@ -4,7 +4,7 @@ var socket = io();
 import { BTC } from './BTC.jsx';
 import { ETH } from './ETH.jsx';
 import { BOTH } from './BTC-ETH.jsx';
-// import { Market } from './market.jsx';
+import { Market } from './market.jsx';
 
 const style = {
   gridContainer: {
@@ -22,16 +22,30 @@ export class App extends React.Component{
     this.state = {
       BTCasks: [],
       BTCbids: [],
+      ETHasks: [],
+      ETHbids: [],
+      ETHBTCasks: [],
+      ETHBTCbids: [],
     };
   };
 
   componentWillMount() {
     socket.on('topBTC', top => {
       this.setState({ BTCasks: top.asks },  () => {
-        console.log('top asks:', this.state.BTCasks);
       });
       this.setState({ BTCbids: top.bids }, () => {
-        console.log('top bids:', this.state.BTCbids);
+      });
+    });
+    socket.on('topETH', top => {
+      this.setState({ ETHasks: top.asks },  () => {
+      });
+      this.setState({ ETHbids: top.bids }, () => {
+      });
+    });
+    socket.on('topETHBTC', top => {
+      this.setState({ ETHBTCasks: top.asks },  () => {
+      });
+      this.setState({ ETHBTCbids: top.bids }, () => {
       });
     });
   }
@@ -49,9 +63,9 @@ export class App extends React.Component{
         })
       */}
 
-      <BTC asks={this.state.BTCasks} bids={this.state.BTCbids} />
-      <ETH {...this.props} />
-      <BOTH {...this.props} />
+      <Market head={'BTC-USD'} asks={this.state.BTCasks} bids={this.state.BTCbids} decimal={2}/>
+      <Market head={'ETH-USD'} asks={this.state.ETHasks} bids={this.state.ETHbids} decimal={2}/>
+      <Market head={'ETH-BTC'} asks={this.state.ETHBTCasks} bids={this.state.ETHBTCbids} decimal={5}/>
 
       <div></div>
       <div></div>
