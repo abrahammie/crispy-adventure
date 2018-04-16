@@ -20,18 +20,18 @@ export class App extends React.Component{
   constructor(props) {
     super(props);
     this.state = {
-      BTCbids: [],
       BTCasks: [],
+      BTCbids: [],
     };
   };
 
   componentWillMount() {
     socket.on('topBTC', top => {
-      this.setState({ BTCbids: top.bids }, () => {
-        console.log('top bids:', this.state.BTCbids);
-      });
       this.setState({ BTCasks: top.asks },  () => {
         console.log('top asks:', this.state.BTCasks);
+      });
+      this.setState({ BTCbids: top.bids }, () => {
+        console.log('top bids:', this.state.BTCbids);
       });
     });
   }
@@ -49,7 +49,7 @@ export class App extends React.Component{
         })
       */}
 
-      <BTC {...this.props} />
+      <BTC asks={this.state.BTCasks} bids={this.state.BTCbids} />
       <ETH {...this.props} />
       <BOTH {...this.props} />
 
