@@ -22,7 +22,9 @@
     "express": "^4.16.3",
     "gdax": "github:coinbase/gdax-node",
     "react": "^16.3.0",
-    "react-dom": "^16.3.0"
+    "react-dom": "^16.3.0",
+    "socket.io": "^2.1.0",
+    "socket.io-client": "^2.1.0"
   },
   "devDependencies": {
     "babel": "^6.23.0",
