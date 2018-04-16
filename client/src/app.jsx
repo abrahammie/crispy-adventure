@@ -1,9 +1,6 @@
 import React from 'react';
 import io from 'socket.io-client';
 var socket = io();
-import { BTC } from './BTC.jsx';
-import { ETH } from './ETH.jsx';
-import { BOTH } from './BTC-ETH.jsx';
 import { Market } from './market.jsx';
 
 const style = {
