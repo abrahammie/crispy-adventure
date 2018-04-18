@@ -24,8 +24,8 @@ io.sockets.on('disconnect', socket => {
 setInterval(() => {
   // get top three ask/bid
   io.sockets.emit('topBTC', {
-   asks: books.bitcoinBook.asks.slice(0, 3).reverse(),
-   bids: books.bitcoinBook.bids.slice(0, 3),
+   asks: books.orders['BTC-USD'].asks.slice(0, 3).reverse(),
+   bids: books.orders['BTC-USD'].bids.slice(0, 3),
   });
 }, 500);
 
@@ -33,8 +33,8 @@ setInterval(() => {
 setInterval(() => {
   // get top three ask/bid
   io.sockets.emit('topETH', {
-   asks: books.etherBook.asks.slice(0, 3).reverse(),
-   bids: books.etherBook.bids.slice(0, 3),
+   asks: books.orders['ETH-USD'].asks.slice(0, 3).reverse(),
+   bids: books.orders['ETH-USD'].bids.slice(0, 3),
   });
 }, 500);
 
@@ -42,8 +42,8 @@ setInterval(() => {
 setInterval(() => {
   // get top three ask/bid
   io.sockets.emit('topETHBTC', {
-   asks: books.etherBitcoinBook.asks.slice(0, 3).reverse(),
-   bids: books.etherBitcoinBook.bids.slice(0, 3),
+   asks: books.orders['ETH-BTC'].asks.slice(0, 3).reverse(),
+   bids: books.orders['ETH-BTC'].bids.slice(0, 3),
   });
 }, 500);
 

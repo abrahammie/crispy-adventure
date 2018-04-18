@@ -5,9 +5,10 @@ const halp = require('./helpers.js');
 
 
 // populate BTC-USD order book
-let bitcoinBook = {
-  asks: [],
-  bids: [],
+let orders = {
+  'BTC-USD': {},
+  'ETH-USD': {},
+  'ETH-BTC': {},
 };
 
 publicClient.getProductOrderBook('BTC-USD', { level: 2 }, (error, data) => {
@@ -15,8 +16,8 @@ publicClient.getProductOrderBook('BTC-USD', { level: 2 }, (error, data) => {
     console.log('Error retrieving BTC-USD order book:', error );
   } else {
     // create bitcoin book
-    bitcoinBook.asks = JSON.parse(data.body).asks.slice(0, 25);
-    bitcoinBook.bids = JSON.parse(data.body).bids.slice(0, 25);
+    orders['BTC-USD'].asks = JSON.parse(data.body).asks.slice(0, 25);
+    orders['BTC-USD'].bids = JSON.parse(data.body).bids.slice(0, 25);
   }
 });
 
@@ -31,8 +32,8 @@ publicClient.getProductOrderBook('ETH-USD', { level: 2 }, (error, data) => {
     console.log('Error retrieving ETH-USD order book:', error );
   } else {
     // create ether book
-    etherBook.asks = JSON.parse(data.body).asks.slice(0, 25);
-    etherBook.bids = JSON.parse(data.body).bids.slice(0, 25);
+    orders['ETH-USD'].asks = JSON.parse(data.body).asks.slice(0, 25);
+    orders['ETH-USD'].bids = JSON.parse(data.body).bids.slice(0, 25);
   }
 });
 
@@ -47,8 +48,8 @@ publicClient.getProductOrderBook('ETH-BTC', { level: 2 }, (error, data) => {
     console.log('Error retrieving ETH-BTC order book:', error );
   } else {
     // create ether-bitcoin book
-    etherBitcoinBook.asks = JSON.parse(data.body).asks.slice(0, 25);
-    etherBitcoinBook.bids = JSON.parse(data.body).bids.slice(0, 25);
+    orders['ETH-BTC'].asks = JSON.parse(data.body).asks.slice(0, 25);
+    orders['ETH-BTC'].bids = JSON.parse(data.body).bids.slice(0, 25);
   }
 });
 
@@ -90,9 +91,15 @@ websocket.on('message', data => {
   } else if (data.type === 'done') {
 
 
-  // if data.type received, limit order received, add to book
-  } else if (data.type === 'received') {
-    // manage length of array, max 25
+  // if data.type received and limit order received, add to book (order_type: market also exists)
+  } else if (data.type === 'received' && data.order_type === 'limit') {
+    if (data.side === 'buy') {
+      // add to bids of appropriate book
+      orders[data.product_id].bids = halp.addToBids(orders[data.product_id].bids, [data.price, data.size, 1]);
+    } else if (data.side === 'sell') {
+      // add to asks of appropriate book
+      orders[data.product_id].asks = halp.addToAsks(orders[data.product_id].asks, [data.price, data.size, 1]);
+    }
 
 
   // something else came through
@@ -110,6 +117,4 @@ websocket.on('close', c => {
 });
 
 
-module.exports.bitcoinBook = bitcoinBook;
-module.exports.etherBook = etherBook;
-module.exports.etherBitcoinBook = etherBitcoinBook;
+module.exports.orders = orders;
