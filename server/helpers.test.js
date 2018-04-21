@@ -57,15 +57,31 @@ const testBids = [
 ];
 
 describe('new highest bid received', ()=> {
+
   test('adds new bid to front of array', () => {
     let modifiedTestBids = testBids.slice();
     modifiedTestBids.unshift(["7820.00","1.65",1]);
     modifiedTestBids.pop();
-
     expect(halp.addToBids(testBids, ["7820.00","1.65",1])).toEqual(modifiedTestBids);
   });
 
   test('length should not exceed 25', () => {
     expect(halp.addToBids(testBids, ["7820.00","1.65",1])).toHaveLength(25);
+  });
+});
+
+describe('new low bid received', ()=> {
+  let newLowBid = ["7813.01","0.60554",1];
+  let resultOfNewLowBid = halp.addToBids(testBids, newLowBid);
+
+  test('adds new bid to end of array', () => {
+    let modifiedTestBids = testBids.slice();
+    modifiedTestBids.pop();
+    modifiedTestBids.push(newLowBid);
+    expect(resultOfNewLowBid).toEqual(modifiedTestBids);
+  });
+
+  test('length should not exceed 25', () => {
+    expect(resultOfNewLowBid).toHaveLength(25);
   });
 });
