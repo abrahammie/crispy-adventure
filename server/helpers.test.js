@@ -97,7 +97,6 @@ describe('new bid received', () => {
     expect(resultOfMatchingBid).toEqual(modifiedTestBids);
   });
 
-
   test('length should not exceed 25', () => {
     expect(resultOfNewHighBid).toHaveLength(25);
     expect(resultOfNewLowBid).toHaveLength(25);
@@ -105,3 +104,55 @@ describe('new bid received', () => {
     expect(resultOfMatchingBid).toHaveLength(25);
   });
 });
+
+
+describe('new ask received', () => {
+
+  let newLowAsk = ['7819.99', '0.105', 1];
+  let resultOfNewLowAsk = halp.addToAsks(testAsks, newLowAsk);
+
+  test('adds new ask to front of array', () => {
+    let modifiedTestAsks = testAsks.slice();
+    modifiedTestAsks.unshift(newLowAsk);
+    modifiedTestAsks.pop();
+    expect(resultOfNewLowAsk).toEqual(modifiedTestAsks);
+  });
+
+  let newMidAsk = ['7825.10', '0.1112', 1];
+  let resultOfNewMidAsk = halp.addToAsks(testAsks, newMidAsk);
+
+  test('adds new ask to correct spot in array', () => {
+    let modifiedTestAsks = testAsks.slice();
+    modifiedTestAsks.splice(10, 0, newMidAsk);
+    modifiedTestAsks.pop();
+    expect(resultOfNewMidAsk).toEqual(modifiedTestAsks);
+  });
+
+  let newHighAsk = ['7832.50', '1', 1];
+  let resultOfNewHighAsk = halp.addToAsks(testAsks, newHighAsk);
+
+  test('adds new ask to end of array', () => {
+    let modifiedTestAsks = testAsks.slice();
+    modifiedTestAsks.pop();
+    modifiedTestAsks.push(newHighAsk);
+    expect(resultOfNewHighAsk).toEqual(modifiedTestAsks);
+  });
+
+  let matchingAsk = ['7820', '0.1', 1];
+  let resultOfMatchingAsk = halp.addToAsks(testAsks, matchingAsk);
+
+  test('increments matching ask', () => {
+    let modifiedTestAsks = testAsks.slice();
+    modifiedTestAsks[0] =  ['7820', '18.20772837', 21];
+    expect(resultOfMatchingAsk).toEqual(modifiedTestAsks);
+  });
+
+  test('length should not exceed 25', () => {
+    expect(resultOfNewHighAsk).toHaveLength(25);
+    expect(resultOfNewLowAsk).toHaveLength(25);
+    expect(resultOfNewMidAsk).toHaveLength(25);
+    expect(resultOfMatchingAsk).toHaveLength(25);
+  });
+
+});
+
