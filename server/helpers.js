@@ -69,54 +69,24 @@ const removeFromAsks = (ordersArray, data) => {
   } else {
     deletionSpot = binarySearchAscendingArray(newArray, data[0]);
     // check for error
-    if (Number.parseFloat(data[0]).toFixed(2) !== Number.parseFloat(newArray[middle][0]).toFixed(2)) {
+    if (Number.parseFloat(data[0]).toFixed(2) !== Number.parseFloat(newArray[deletionSpot][0]).toFixed(2)) {
       console.log('Error deleting from asks, no matching ask:', data);
       return;
-    // check for inadequate balance
+    // else check for inadequate balance
     } else if ((Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1])) < 0) {
       console.log('Error deleting from asks, inadequate balance:', data);
       return;
-    // check for remaining balance, decrement size
+    // else check for remaining balance, decrement size
     } else if ((Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1])) > 0) {
       let newSize = Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1]);
       newArray[deletionSpot] = [newArray[deletionSpot][0], newSize.toString(), newArray[deletionSpot][2]];
       return newArray;
     // else it's an exact match, delete
     } else {
-      newArray.splice(deletionSpot, 0);
+      newArray.splice(deletionSpot, 1);
       return newArray;
     }
   }
-
-  //     // increment order
-  //     let amt = Number.parseFloat(newArray[middle][1]) + Number.parseFloat(data[1]);
-  //     newArray[middle] = [newArray[middle][0], amt.toString(), ++newArray[middle][2]];
-  //     return newArray;
-  //     // if you've looked at all spots
-  //     } else if (middle === low) {
-  //       matchIndex = high;
-  //       break;
-  //     } else if (Number.parseFloat(data[0]) > Number.parseFloat(newArray[middle][0])) {
-  //       low = middle;
-  //       middle = Math.floor((high + low) / 2);
-  //     } else if (Number.parseFloat(data[0]) < Number.parseFloat(newArray[middle][0])) {
-  //       high = middle;
-  //       middle = Math.floor((high + low) / 2);
-  //     }
-  //   }
-
-  //   // if size of matching ask > incoming data size
-
-  //     // decrement size of ask
-
-  //   // else if exact match
-
-  //     // delete ask - length goes below 25
-
-  //   // else - do we need to account for possibility of incoming data size exceeding availabile ask size?
-
-  //   return newArray;
-  // }
 };
 
 
