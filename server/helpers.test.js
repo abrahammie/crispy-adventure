@@ -62,7 +62,7 @@ describe('new bid received', () => {
   let resultOfNewHighBid = halp.addToBids(testBids, newHighBid);
 
   test('adds new bid to front of array', () => {
-    let modifiedTestBids = testBids.slice();
+    let modifiedTestBids = JSON.parse(JSON.stringify(testBids));
     modifiedTestBids.unshift(newHighBid);
     modifiedTestBids.pop();
     expect(resultOfNewHighBid).toEqual(modifiedTestBids);
@@ -72,7 +72,7 @@ describe('new bid received', () => {
   let resultOfNewMidBid = halp.addToBids(testBids, newMidBid);
 
   test('adds new bid to correct spot in array', () => {
-    let modifiedTestBids = testBids.slice();
+    let modifiedTestBids = JSON.parse(JSON.stringify(testBids));
     modifiedTestBids.splice(12, 0, newMidBid);
     modifiedTestBids.pop();
     expect(resultOfNewMidBid).toEqual(modifiedTestBids);
@@ -82,7 +82,7 @@ describe('new bid received', () => {
   let resultOfNewLowBid = halp.addToBids(testBids, newLowBid);
 
   test('adds new bid to end of array', () => {
-    let modifiedTestBids = testBids.slice();
+    let modifiedTestBids = JSON.parse(JSON.stringify(testBids));
     modifiedTestBids.pop();
     modifiedTestBids.push(newLowBid);
     expect(resultOfNewLowBid).toEqual(modifiedTestBids);
@@ -92,7 +92,7 @@ describe('new bid received', () => {
   let resultOfMatchingBid = halp.addToBids(testBids, matchingBid);
 
   test('increments matching bid', () => {
-    let modifiedTestBids = testBids.slice();
+    let modifiedTestBids = JSON.parse(JSON.stringify(testBids));
     modifiedTestBids[21] = ['7813.41', '0.2', 2];
     expect(resultOfMatchingBid).toEqual(modifiedTestBids);
   });
@@ -112,7 +112,7 @@ describe('new ask received', () => {
   let resultOfNewLowAsk = halp.addToAsks(testAsks, newLowAsk);
 
   test('adds new ask to front of array', () => {
-    let modifiedTestAsks = testAsks.slice();
+    let modifiedTestAsks = JSON.parse(JSON.stringify(testAsks));
     modifiedTestAsks.unshift(newLowAsk);
     modifiedTestAsks.pop();
     expect(resultOfNewLowAsk).toEqual(modifiedTestAsks);
@@ -122,7 +122,7 @@ describe('new ask received', () => {
   let resultOfNewMidAsk = halp.addToAsks(testAsks, newMidAsk);
 
   test('adds new ask to correct spot in array', () => {
-    let modifiedTestAsks = testAsks.slice();
+    let modifiedTestAsks = JSON.parse(JSON.stringify(testAsks));
     modifiedTestAsks.splice(10, 0, newMidAsk);
     modifiedTestAsks.pop();
     expect(resultOfNewMidAsk).toEqual(modifiedTestAsks);
@@ -132,7 +132,7 @@ describe('new ask received', () => {
   let resultOfNewHighAsk = halp.addToAsks(testAsks, newHighAsk);
 
   test('adds new ask to end of array', () => {
-    let modifiedTestAsks = testAsks.slice();
+    let modifiedTestAsks = JSON.parse(JSON.stringify(testAsks));
     modifiedTestAsks.pop();
     modifiedTestAsks.push(newHighAsk);
     expect(resultOfNewHighAsk).toEqual(modifiedTestAsks);
@@ -142,8 +142,8 @@ describe('new ask received', () => {
   let resultOfMatchingAsk = halp.addToAsks(testAsks, matchingAsk);
 
   test('increments matching ask', () => {
-    let modifiedTestAsks = testAsks.slice();
-    modifiedTestAsks[0] =  ['7820', '18.20772837', 21];
+    let modifiedTestAsks = JSON.parse(JSON.stringify(testAsks));
+    modifiedTestAsks[0] = ['7820', '18.20772837', 21];
     expect(resultOfMatchingAsk).toEqual(modifiedTestAsks);
   });
 
@@ -154,5 +154,55 @@ describe('new ask received', () => {
     expect(resultOfMatchingAsk).toHaveLength(25);
   });
 
+});
+
+describe('ask removed/reduced', () => {
+  let matchingBid = ['7820', '5', 1];
+  let resultOfMatchingBid = halp.removeFromAsks(testAsks, matchingBid);
+
+  test('reduces size of ask when order partially filled', () => {
+    let modifiedTestAsks = JSON.parse(JSON.stringify(testAsks));
+    let modifiedAsk = ['7820', '13.10772837', 20]
+    modifiedTestAsks.splice(0, 1, modifiedAsk);
+    expect(resultOfMatchingBid).toEqual(modifiedTestAsks);
+  });
+
+//   // let newMidAsk = ['7825.10', '0.1112', 1];
+//   // let resultOfNewMidAsk = halp.addToAsks(testAsks, newMidAsk);
+
+//   // test('adds new ask to correct spot in array', () => {
+//   //   let modifiedTestAsks = testAsks.slice();
+//   //   modifiedTestAsks.splice(10, 0, newMidAsk);
+//   //   modifiedTestAsks.pop();
+//   //   expect(resultOfNewMidAsk).toEqual(modifiedTestAsks);
+//   // });
+
+//   // let newHighAsk = ['7832.50', '1', 1];
+//   // let resultOfNewHighAsk = halp.addToAsks(testAsks, newHighAsk);
+
+//   // test('adds new ask to end of array', () => {
+//   //   let modifiedTestAsks = testAsks.slice();
+//   //   modifiedTestAsks.pop();
+//   //   modifiedTestAsks.push(newHighAsk);
+//   //   expect(resultOfNewHighAsk).toEqual(modifiedTestAsks);
+//   // });
+
+//   // let matchingAsk = ['7820', '0.1', 1];
+//   // let resultOfMatchingAsk = halp.addToAsks(testAsks, matchingAsk);
+
+//   // test('increments matching ask', () => {
+//   //   let modifiedTestAsks = testAsks.slice();
+//   //   modifiedTestAsks[0] =  ['7820', '18.20772837', 21];
+//   //   expect(resultOfMatchingAsk).toEqual(modifiedTestAsks);
+//   // });
+
+  test('length should be unchanged', () => {
+    expect(resultOfMatchingBid).toHaveLength(25);
+  });
+
+//   test('length should be reduced', () => {
+//     // expect(resultOfMatchingBid).toHaveLength(24);
+
+//   });
 });
 
