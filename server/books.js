@@ -4,13 +4,13 @@ const websocket = new Gdax.WebsocketClient(['BTC-USD', 'ETH-USD', 'ETH-BTC']);
 const halp = require('./helpers.js');
 
 
-// populate BTC-USD order book
 let orders = {
   'BTC-USD': {},
   'ETH-USD': {},
   'ETH-BTC': {},
 };
 
+// populate BTC-USD order book
 publicClient.getProductOrderBook('BTC-USD', { level: 2 }, (error, data) => {
   if (error) {
     console.log('Error retrieving BTC-USD order book:', error );
@@ -22,11 +22,6 @@ publicClient.getProductOrderBook('BTC-USD', { level: 2 }, (error, data) => {
 });
 
 // populate ETH-USD order book
-let etherBook = {
-  asks: [],
-  bids: [],
-};
-
 publicClient.getProductOrderBook('ETH-USD', { level: 2 }, (error, data) => {
   if (error) {
     console.log('Error retrieving ETH-USD order book:', error );
@@ -38,11 +33,6 @@ publicClient.getProductOrderBook('ETH-USD', { level: 2 }, (error, data) => {
 });
 
 // populate ETH-BTC order book
-let etherBitcoinBook = {
-  asks: [],
-  bids: [],
-};
-
 publicClient.getProductOrderBook('ETH-BTC', { level: 2 }, (error, data) => {
   if (error) {
     console.log('Error retrieving ETH-BTC order book:', error );
@@ -53,7 +43,7 @@ publicClient.getProductOrderBook('ETH-BTC', { level: 2 }, (error, data) => {
   }
 });
 
-
+console.log(orders)
 // start updating order book
 websocket.on('message', data => {
   console.log(data);
@@ -61,38 +51,34 @@ websocket.on('message', data => {
   // if data.type open, order was filled, so delete from book
   if (data.type === 'open') {
     if (data.side === 'buy') {
-      // search bitcoinBook[asks] for data.price(rounded to 2)
-
-        // if found and order size matches
-          // delete from array
-
-        // if found but order size greater
-          // decrement order size
-        // if found but order size less
-          // console.log('ERROR order size mismatch');
-        // if not found
-          // if order price NOT outside bounds of book
-            // console.log('ERROR order price not found in book')
-
+      // todo
     } else if (data.side === 'sell') {
-      // search bitcoinBook[bids] for data.price(rounded)
-      // if found and order size matches
-        // delete from array
-      // if found but order size greater
-        // decrement order size
-      // if found but order size less
-        // console.log('ERROR order size mismatch');
-      // if not found
-        // if order price NOT outside bounds of book
-          // console.log('ERROR order price not found in book')
-
+      // todo
     }
-  // if data.type done, order was cancelled, delete from book
-  } else if (data.type === 'done') {
 
+  // if data.type done and order was cancelled, delete from book
+  } else if (data.type === 'done' && data.reason === 'cancelled') {
+    console.log('ORDERS',orders)
+    if (data.side === 'sell') {
+      orders[data.product_id].asks = halp.removeFromAsks(orders[data.product_id].asks, [data.price, data.size, 1]);
+    } else if (data.side === 'buy') {
+      // orders[data.product_id].bids = halp.removeFromBids(orders[data.product_id].asks, [data.price, data.size, 1]);
+    }
+
+    // if matching order comes in, remove from opposite book
+
+  } else if (data.type === 'match') {
+    console.log('ORDERS',orders)
+    if (data.side === 'buy') {
+      // remove from asks of appropriate book
+      orders[data.product_id].asks = halp.removeFromAsks(orders[data.product_id].asks, [data.price, data.size, 1]);
+    } else if (data.side === 'buy') {
+      // orders[data.product_id].bids = halp.removeFromBids(orders[data.product_id].asks, [data.price, data.size, 1]);
+    }
 
   // if data.type received and limit order received, add to book (order_type: market also exists)
   } else if (data.type === 'received' && data.order_type === 'limit') {
+    console.log('ORDERS',orders)
     if (data.side === 'buy') {
       // add to bids of appropriate book
       orders[data.product_id].bids = halp.addToBids(orders[data.product_id].bids, [data.price, data.size, 1]);
