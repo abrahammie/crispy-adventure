@@ -70,12 +70,13 @@ const removeFromAsks = (ordersArray, data) => {
     deletionSpot = binarySearchAscendingArray(newArray, data[0]);
     // check for error
     if (Number.parseFloat(data[0]).toFixed(2) !== Number.parseFloat(newArray[deletionSpot][0]).toFixed(2)) {
-      console.log('Error deleting from asks, no matching ask:', data);
-      return;
+      console.log('Outside of orderbook ask range:', data);
+      return newArray;
     // else check for inadequate balance
     } else if ((Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1])) < 0) {
-      console.log('Error deleting from asks, inadequate balance:', data);
-      return;
+      console.log('Partially filled:', newArray[deletionSpot], 'removed, ', data, 'requested');
+      newArray.splice(deletionSpot, 1);
+      return newArray;
     // else check for remaining balance, decrement size
     } else if ((Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1])) > 0) {
       let newSize = Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1]);
