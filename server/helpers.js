@@ -1,6 +1,6 @@
 const addToAsks = (ordersArray, data) => {
   // console.log('adding to asks');
-  let newArray = [...ordersArray];
+  let newArray = JSON.parse(JSON.stringify(ordersArray));
   let insertionSpot;
 
   // if order outside range, return
@@ -29,7 +29,7 @@ const addToAsks = (ordersArray, data) => {
 
 const addToBids = (ordersArray, data) => {
   // console.log('adding to bids');
-  let newArray = [...ordersArray];
+  let newArray = JSON.parse(JSON.stringify(ordersArray));
   let insertionSpot;
 
   // if order outside range, return
@@ -59,7 +59,7 @@ const addToBids = (ordersArray, data) => {
 
 const removeFromAsks = (ordersArray, data) => {
   console.log('removing from asks');
-  let newArray = [...ordersArray];
+  let newArray = JSON.parse(JSON.stringify(ordersArray));
   let deletionSpot;
 
   // if order outside range, return
@@ -79,7 +79,7 @@ const removeFromAsks = (ordersArray, data) => {
     // else check for remaining balance, decrement size
     } else if ((Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1])) > 0) {
       let newSize = Number.parseFloat(newArray[deletionSpot][1]) - Number.parseFloat(data[1]);
-      newArray[deletionSpot] = [newArray[deletionSpot][0], newSize.toString(), newArray[deletionSpot][2]];
+      newArray[deletionSpot][1] = newSize.toString();
       return newArray;
     // else it's an exact match, delete
     } else {
